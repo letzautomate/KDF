@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="5009" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="5009" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+      <class name="com.letzautomate.driver.Driver">
+        <test-method status="PASS" signature="runSuite()[pri:0, instance:com.letzautomate.driver.Driver@7cd62f43]" name="runSuite" duration-ms="4954" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- runSuite -->
+      </class> <!-- com.letzautomate.driver.Driver -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
