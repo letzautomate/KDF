@@ -5,6 +5,7 @@
     <classes>
       <class name="com.letzautomate.driver.Driver">
         <methods>
+          <include name="quitDriver"/>
           <include name="runSuite"/>
         </methods>
       </class> <!-- com.letzautomate.driver.Driver -->

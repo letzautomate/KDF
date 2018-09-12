@@ -2,16 +2,37 @@
 <testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="5009" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+  <suite name="Suite" duration-ms="9402" started-at="2018-09-12T14:27:55Z" finished-at="2018-09-12T14:28:05Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="5009" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+    <test name="Test" duration-ms="9402" started-at="2018-09-12T14:27:55Z" finished-at="2018-09-12T14:28:05Z">
       <class name="com.letzautomate.driver.Driver">
-        <test-method status="PASS" signature="runSuite()[pri:0, instance:com.letzautomate.driver.Driver@7cd62f43]" name="runSuite" duration-ms="4954" started-at="2018-09-08T13:42:16Z" finished-at="2018-09-08T13:42:21Z">
+        <test-method status="PASS" signature="runSuite(java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:com.letzautomate.driver.Driver@204f30ec]" name="runSuite" duration-ms="9066" started-at="2018-09-12T14:27:55Z" finished-at="2018-09-12T14:28:05Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[CHROME]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[testcases]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[http://localhost:5555/wd/grid]]>
+              </value>
+            </param>
+          </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- runSuite -->
+        <test-method status="PASS" signature="quitDriver()[pri:0, instance:com.letzautomate.driver.Driver@204f30ec]" name="quitDriver" is-config="true" duration-ms="264" started-at="2018-09-12T14:28:05Z" finished-at="2018-09-12T14:28:05Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- quitDriver -->
       </class> <!-- com.letzautomate.driver.Driver -->
-    </test> <!-- Default test -->
-  </suite> <!-- Default suite -->
+    </test> <!-- Test -->
+  </suite> <!-- Suite -->
 </testng-results>
