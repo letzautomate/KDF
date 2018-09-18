@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Suite]">
-  <parameter name="remoteHostURL" value="http://localhost:5555/wd/grid"/>
+  <parameter name="remoteHostURL" value="http://localhost:5555/wd/hub"/>
   <parameter name="browserName" value="CHROME"/>
-  <parameter name="testcases" value="testcases"/>
+  <parameter name="testcases" value="testcasesDB"/>
   <test thread-count="5" name="Test(failed)">
     <classes>
       <class name="com.letzautomate.driver.Driver">

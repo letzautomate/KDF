@@ -2,8 +2,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Suite">
     <parameter name="browserName" value="CHROME"></parameter>
-    <parameter name="testcases" value="testcases"></parameter>
-    <parameter name="remoteHostURL" value = "http://localhost:5555/wd/grid"></parameter>
+    <parameter name="testcases" value="testcasesDB"></parameter>
+    <parameter name="remoteHostURL" value = "http://localhost:5555/wd/hub"></parameter>
   <test thread-count="5" name="Test">
     <classes>
       <class name="com.letzautomate.driver.Driver"/>

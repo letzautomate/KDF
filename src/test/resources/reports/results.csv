@@ -1,0 +1,6 @@
+tcStart, , ,PASS,Execution started, 
+launchApplication, , ,PASS,launch application is passed, 
+tcEnd, , ,PASS,Execution Ended, 
+tcStart, , ,PASS,Execution started, 
+enterUsername, , ,PASS,userName is entered, 
+tcEnd, , ,PASS,Execution Ended, 

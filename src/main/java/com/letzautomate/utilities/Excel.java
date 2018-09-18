@@ -4,8 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,9 +21,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.WebDriver;
+
+import com.letzautomate.businessKeywords.BusinessKeywords;
 
 public class Excel {
-	
+	WebDriver driver;
 	Row row;
 	
 	public void createWorkbook(String path) throws EncryptedDocumentException, InvalidFormatException, IOException{
@@ -36,26 +44,21 @@ public class Excel {
 			Workbook wb = WorkbookFactory.create(new File(filePath));
 			Sheet sheet = wb.getSheet("Testcases");
 			int totalStepRows  = sheet.getLastRowNum();
-			System.out.println(totalStepRows);
 			int colsCount = sheet.getRow(0).getLastCellNum();
-			System.out.println(colsCount);
-			
 			String[][] testSuite = new String[totalStepRows + 1][colsCount - 1];
 			String cellValue = null;
-			
 			for(int testStepIndex = 0 ; testStepIndex < totalStepRows ; testStepIndex++ ) {		
 				for(int colIndex = 0; colIndex < colsCount - 1; colIndex++) {
 					Cell cell = sheet.getRow(testStepIndex).getCell(colIndex);
 					if(cell == null || cell.getCellType() == cell.CELL_TYPE_BLANK) {
 						testSuite[testStepIndex][colIndex] = " ";
-						//System.out.println(" ");
 					} else {
-						//System.out.println(sheet.getRow(testStepIndex).getCell(colIndex).getStringCellValue());
 						testSuite[testStepIndex][colIndex] = sheet.getRow(testStepIndex).getCell(colIndex).getStringCellValue();	
 					}
 				}				
 			}
 			wb.close();
+			
 			return testSuite;
 	}
 	
@@ -65,7 +68,7 @@ public class Excel {
 		int numOfTCs = sheet.getLastRowNum();
 		String[] tcArray = new String[numOfTCs + 1];
 		
-		for (int tcIndex = 0; tcIndex < numOfTCs; tcIndex++) {
+		for (int tcIndex = 0; tcIndex <= numOfTCs; tcIndex++) {
 			tcArray[tcIndex] = sheet.getRow(tcIndex).getCell(0).getStringCellValue();
 		}
 		wb.close();
@@ -74,8 +77,8 @@ public class Excel {
 	
 	public String getCellValueAsString(Sheet sheet, int rowID, int columnID) {
 		Cell cell = sheet.getRow(rowID).getCell(columnID);
-		if (cell.getCellType() == Cell.CELL_TYPE_BLANK  || cell == null){
-			return null;
+		if (cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK ){
+			return " ";
 		}else {
 			if (cell.getCellType() == Cell.CELL_TYPE_STRING ) {
 				return cell.getStringCellValue();
@@ -83,10 +86,10 @@ public class Excel {
 				return Double.toString(cell.getNumericCellValue());
 			} 
 		}
-		return null;
-		
-		
+		return "";
 	}
+	
+	
 	
 	public void writeDataArrayToExcel(String filePath, String[][] dataArray) throws IOException, EncryptedDocumentException, InvalidFormatException, InterruptedException {
 		
@@ -115,17 +118,99 @@ public class Excel {
 			 FileOutputStream fileOut = new FileOutputStream(filePath);
 			 wb.write(fileOut);
 			 fileOut.close();
-			 wb.close();
-			 
+			 wb.close();			 
 		}
 	}
-	public static void main(String[] args) throws EncryptedDocumentException, InvalidFormatException, IOException {
-		/*Excel excel = new Excel();
-		//excel.createWorkbook("C:/javasamples/myfile.xls");	
-		System.out.println(excel.getTCToExecute());;*/
-		
+	
+	public ArrayList<String> getTCsToExecute() throws EncryptedDocumentException, InvalidFormatException, IOException {
+		ArrayList<String> tcsListToExecute = new ArrayList<String> ();
+		String filePath = "C:/KDF/src/test/resources/testcases/tcsList.xls";
+		Workbook wb = WorkbookFactory.create(new File(filePath));
+		Sheet sheet = wb.getSheet("tcs");
+		Iterator<Row> rowIterator = sheet.rowIterator();
+		while(rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			tcsListToExecute.add(row.getCell(0).getStringCellValue());
+		}
+		return tcsListToExecute;
 	}
 	
+	public void getTestSuiteFromTcDB() throws EncryptedDocumentException, InvalidFormatException, IOException {
+		ArrayList<String> tcsToExecute = getTCsToExecute();
+		ArrayList<String> tcInfoList = new ArrayList<String> ();
+		LinkedHashMap<String, ArrayList<String>> tsMap = new LinkedHashMap<String, ArrayList<String>> ();				
+		ArrayList<String> tcsListRaw = new ArrayList<String> ();
+		String filePath = "C:/KDF/src/test/resources/testcases/testcasesDB.xls";
+		Workbook dbWorkbook = WorkbookFactory.create(new File(filePath));
+		Sheet dbSheet = dbWorkbook.getSheet("tcs");
+		Iterator<Row> rowIterator = dbSheet.rowIterator();
+		while(rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			Cell cell = row.getCell(0);
+			if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+				tcsListRaw.add("NA");
+			}else {
+			tcsListRaw.add(row.getCell(0).getStringCellValue());
+			}
+		}
+		String tcID = null;
+		String tcInfo = null;
+		for(String tcToExecute : tcsToExecute) {
+			int tcRowID = tcsListRaw.indexOf(tcToExecute);
+			tcID = getCellValueAsString(dbSheet, tcRowID, 0);
+			String keywordVal = "";
+			do {
+				tcInfo = getCellValueAsString(dbSheet, tcRowID, 1)
+											+ "||| " + getCellValueAsString(dbSheet, tcRowID, 2)
+											+ "|||" + getCellValueAsString(dbSheet, tcRowID, 3)
+											+ "|||" + getCellValueAsString(dbSheet, tcRowID, 4)
+											+ "|||" + getCellValueAsString(dbSheet, tcRowID, 5)
+											+ "|||" + getCellValueAsString(dbSheet, tcRowID, 6);
+				
+				/*tcInfo = getCellValueAsString(dbSheet, tcRowID, 0);
+				String keyword = getCellValueAsString(dbSheet, tcRowID, 1);
+				String input = getCellValueAsString(dbSheet, tcRowID, 2);
+				String dep =  getCellValueAsString(dbSheet, tcRowID, 3);
+				String status = getCellValueAsString(dbSheet, tcRowID, 4);
+				String actual = getCellValueAsString(dbSheet, tcRowID, 5);
+				String screenshot = getCellValueAsString(dbSheet, tcRowID, 6);*/
+					
+					tcInfoList.add(tcInfo);
+					keywordVal = getCellValueAsString(dbSheet, tcRowID, 1);
+					tcRowID = tcRowID + 1;						
+				}while (!keywordVal.equals("tcEnd"));
+				tsMap.put(tcID, tcInfoList)	;		
+		}
+		System.out.println(tsMap.get("login1"));		
+	}
 	
+	public ArrayList<String> getASingleColumnValues(Sheet sheet, int columnIndex) throws EncryptedDocumentException, InvalidFormatException, IOException{
+		ArrayList<String> colValuesList = new ArrayList<String> ();
+		Iterator<Row> rowIterator = sheet.iterator();
+		while(rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			Cell cell = row.getCell(columnIndex);
+			if( cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+				colValuesList.add("NoValue");
+			}else {
+				colValuesList.add(cell.getStringCellValue());
+			}
+		}
+		return colValuesList;	
+	}
+	
+	public void getTestSuiteFromTcDB1() throws EncryptedDocumentException, InvalidFormatException, IOException {
+		String filePath = "C:/KDF/src/test/resources/testcases/testcasesDB.xls";
+		//ArrayList<String> tcsToExecute = getTCsToExecute();
+		Workbook dbWorkbook = WorkbookFactory.create(new File(filePath));
+		Sheet dbSheet = dbWorkbook.getSheet("tcs");
+		ArrayList<String> tcIDsTempList = getASingleColumnValues(dbSheet, 0);	
+		System.out.println(tcIDsTempList);
+		int tcStartRowID = tcIDsTempList.indexOf("login2");
+		System.out.println(tcStartRowID);
+		dbWorkbook.close();
+	}
+	
+		
 
 }

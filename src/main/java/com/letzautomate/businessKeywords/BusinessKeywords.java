@@ -22,6 +22,16 @@ public class BusinessKeywords {
 		this.properties = ReadProperties.getProperties();
 	}
 	
+	public void tcStart() {
+		this.status = "PASS";
+		this.actualResult = "Execution started";
+	}
+	
+	public void tcEnd() {
+		this.status = "PASS";
+		this.actualResult = "Execution Ended";
+	}
+	
 	public void launchApplication() {
 		try{
 		driver.get(properties.getProperty("url"));
@@ -39,6 +49,10 @@ public class BusinessKeywords {
 		this.actualResult = "userName is entered";
 	}
 	
+	public void newAddition() {
+		System.out.println("This is new Addition");
+	}
+	
 	public void refresh() {
 		driver.get("http://newtours.demoaut.com");
 		this.status = "PASS";
@@ -49,6 +63,7 @@ public class BusinessKeywords {
 	public void addition(String params) {
 		this.status = "PASS";
 		this.actualResult = "addition is executed";
+		System.out.println("added");
 	}
 	
 	public void substraction(String params) {
